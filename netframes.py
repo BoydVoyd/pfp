@@ -2,7 +2,7 @@ import socket
 import struct
 import binascii
 import sys
-
+import datetime
 
 class EthFrame:
     def __init__(self, frame):
@@ -11,8 +11,11 @@ class EthFrame:
         self.TCP_IP_HDR_BASE_LEN= 20
         self.fields = {}
         self.headers = {}
+        self.dt = datetime.datetime.now()
         self.eth_hdr_str = self.frame[0:self.ETH_HDR_LEN]
         self.headers["ethernet"] = struct.unpack("!6s6s2s", self.eth_hdr_str)
+        self.fields["time"] = self.dt.time()
+        self.fields["date"] = self.dt.date()
         self.fields["src_mac"] = binascii.hexlify(self.headers["ethernet"][0])
         self.fields["dst_mac"] = binascii.hexlify(self.headers["ethernet"][1])
         self.fields["eth_type"] = binascii.hexlify(self.headers["ethernet"][2])
@@ -64,7 +67,9 @@ class EthFrame:
         print "Eth Info:"
         print "Src MAC: " + self.fields["src_mac"] + " | Dst MAC : " + \
               self.fields["dst_mac"] + " | Eth type: " + \
-              self.fields["eth_type"] + "\n"
+              self.fields["eth_type"] + " | Date: " + str(self.fields["date"])+\
+              " | Time: " + str(self.fields["time"])+\
+              "\n"
 
     def print_ip_fields(self):
         print "IP Info:"
