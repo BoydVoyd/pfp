@@ -18,6 +18,7 @@ class WorkerThread(threading.Thread):
             print "Ordered to sleep for %d seconds!" % counter
             time.sleep(counter)
             print "Finished sleeping for %d seconds" % counter
+            self.queue.task_done()
 
 
 queue = Queue.Queue()
@@ -29,7 +30,7 @@ for i in range(10):
     worker.start()
     print "WorkerThread %d Created!" % i
 
-for j in range(10):
+for j in range(20):
     queue.put(j)
 
 queue.join()
